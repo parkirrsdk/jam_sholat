@@ -53,6 +53,18 @@ pointer-events:none;z-index:0;}
 .iq-sub{font-size:11px;color:var(--muted);}
 .iq-alarm-hint{font-size:10px;color:var(--muted);opacity:0.6;margin-top:4px;}
 
+/* TOAST */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#1e2d4a;border:1px solid var(--border);color:var(--text);
+  padding:10px 18px;border-radius:12px;font-size:12px;font-weight:600;
+  z-index:999;opacity:0;transition:all 0.3s;pointer-events:none;
+  max-width:85%;text-align:center;line-height:1.4;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.toast-success{border-color:var(--green);color:var(--green);}
+.toast.toast-error{border-color:#e06c6c;color:#e06c6c;}
+
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(6,13,26,0.85);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
 .modal-overlay.show{opacity:1;pointer-events:all;}
@@ -555,21 +567,55 @@ function applyManualLocation(){
 function fillFromGPS(){
   const btn=document.querySelector('.btn-gps-fill');
   if(btn){btn.textContent='⏳ Mendeteksi...';btn.disabled=true;}
-  if(!navigator.geolocation){alert('GPS tidak tersedia.');if(btn){btn.textContent='📡 Isi Otomatis dari GPS';btn.disabled=false;}return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const lat=pos.coords.latitude,lon=pos.coords.longitude;
-    document.getElementById('inputLat').value=lat.toFixed(6);
-    document.getElementById('inputLon').value=lon.toFixed(6);
-    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=id`)
-      .then(r=>r.json()).then(data=>{
-        const a=data.address||{};
-        const c=a.city||a.town||a.village||a.county||'';
-        if(c)document.getElementById('inputCity').value=c;
-      }).catch(()=>{}).finally(()=>{
-        if(btn){btn.textContent='✅ Berhasil!';btn.disabled=false;}
-        setTimeout(()=>{if(btn)btn.textContent='📡 Isi Otomatis dari GPS';},2000);
-      });
-  },()=>{alert('GPS gagal.');if(btn){btn.textContent='📡 Isi Otomatis dari GPS';btn.disabled=false;}},{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+  if(!navigator.geolocation){
+    showToast('GPS tidak tersedia di perangkat ini','error');
+    if(btn){btn.textContent='📡 Isi Otomatis dari GPS';btn.disabled=false;}
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      const lat=pos.coords.latitude,lon=pos.coords.longitude;
+      document.getElementById('inputLat').value=lat.toFixed(6);
+      document.getElementById('inputLon').value=lon.toFixed(6);
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=id`)
+        .then(r=>r.json()).then(data=>{
+          const a=data.address||{};
+          const c=a.city||a.town||a.village||a.county||'';
+          if(c)document.getElementById('inputCity').value=c;
+        }).catch(()=>{}).finally(()=>{
+          showToast('✅ Koordinat GPS berhasil diisi!','success');
+          if(btn){btn.textContent='✅ Berhasil!';btn.disabled=false;}
+          setTimeout(()=>{if(btn)btn.textContent='📡 Isi Otomatis dari GPS';},2000);
+        });
+    },
+    err=>{
+      // Jangan pakai alert — tampilkan pesan di dalam halaman
+      let msg='GPS gagal mendapatkan lokasi.';
+      if(err.code===1) msg='Izin GPS ditolak. Cek pengaturan Chrome → Izin Situs → Lokasi.';
+      else if(err.code===2) msg='Sinyal GPS lemah. Coba di luar ruangan.';
+      else if(err.code===3) msg='GPS timeout. Coba lagi beberapa saat.';
+      showToast(msg,'error');
+      if(btn){btn.textContent='📡 Isi Otomatis dari GPS';btn.disabled=false;}
+    },
+    // maximumAge:30000 → boleh pakai cache GPS 30 detik agar lebih cepat
+    {enableHighAccuracy:true,timeout:12000,maximumAge:30000}
+  );
+}
+
+// ==============================
+// TOAST NOTIFICATION (ganti alert)
+// ==============================
+function showToast(msg, type='info'){
+  let toast=document.getElementById('toastMsg');
+  if(!toast){
+    toast=document.createElement('div');
+    toast.id='toastMsg';
+    document.body.appendChild(toast);
+  }
+  toast.textContent=msg;
+  toast.className='toast toast-'+type+' show';
+  clearTimeout(toast._timer);
+  toast._timer=setTimeout(()=>toast.classList.remove('show'),4000);
 }
 
 // ==============================
@@ -580,40 +626,62 @@ function getTimezone(lon){if(lon>=135)return 9;if(lon>=115)return 8;return 7;}
 function refreshGPS(){
   const btn=document.getElementById('btnGPSRefresh');
   if(btn)btn.textContent='⏳';
-  if(!navigator.geolocation){if(btn)btn.textContent='🔄';return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    state.lat=pos.coords.latitude;state.lon=pos.coords.longitude;
-    state.timezone=getTimezone(state.lon);
-    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${state.lat}&lon=${state.lon}&format=json&accept-language=id`)
-      .then(r=>r.json()).then(d=>{const a=d.address||{};state.city=a.city||a.town||a.village||'Lokasi GPS';})
-      .catch(()=>{state.city='Lokasi GPS';}).finally(()=>{calculate();if(btn)btn.textContent='🔄';});
-  },()=>{if(btn)btn.textContent='🔄';},{enableHighAccuracy:true,timeout:10000,maximumAge:0});
+  if(!navigator.geolocation){
+    showToast('GPS tidak tersedia','error');
+    if(btn)btn.textContent='🔄';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      state.lat=pos.coords.latitude;state.lon=pos.coords.longitude;
+      state.timezone=getTimezone(state.lon);
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${state.lat}&lon=${state.lon}&format=json&accept-language=id`)
+        .then(r=>r.json()).then(d=>{const a=d.address||{};state.city=a.city||a.town||a.village||'Lokasi GPS';})
+        .catch(()=>{state.city='Lokasi GPS';})
+        .finally(()=>{
+          calculate();
+          if(btn)btn.textContent='🔄';
+          showToast('✅ Lokasi diperbarui: '+state.city,'success');
+        });
+    },
+    err=>{
+      if(btn)btn.textContent='🔄';
+      let msg='GPS gagal.';
+      if(err.code===1) msg='Izin GPS ditolak di Chrome. Ketuk 🔒 di address bar → Izin → Lokasi → Izinkan.';
+      else if(err.code===2) msg='Sinyal GPS tidak tersedia.';
+      else if(err.code===3) msg='GPS timeout, coba lagi.';
+      showToast(msg,'error');
+    },
+    {enableHighAccuracy:true,timeout:12000,maximumAge:30000}
+  );
 }
 
 // ==============================
 // INIT — langsung tampil, GPS opsional
 // ==============================
-updateDates();
-calculate();
+document.addEventListener('DOMContentLoaded', function(){
+  updateDates();
+  calculate();
 
-// Coba GPS di background diam-diam (tidak blokir tampilan)
-if(navigator.geolocation){
-  navigator.geolocation.getCurrentPosition(
-    pos=>{
-      state.lat=pos.coords.latitude;
-      state.lon=pos.coords.longitude;
-      state.timezone=getTimezone(state.lon);
-      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${state.lat}&lon=${state.lon}&format=json&accept-language=id`)
-        .then(r=>r.json()).then(data=>{
-          const a=data.address||{};
-          state.city=a.city||a.town||a.village||a.county||'Lokasi GPS';
-        }).catch(()=>{state.city='Lokasi GPS';})
-        .finally(()=>calculate());
-    },
-    ()=>{/* GPS gagal, tetap pakai default */},
-    {enableHighAccuracy:true,timeout:8000,maximumAge:60000}
-  );
-}
+  // Coba GPS di background diam-diam (tidak blokir tampilan)
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      pos=>{
+        state.lat=pos.coords.latitude;
+        state.lon=pos.coords.longitude;
+        state.timezone=getTimezone(state.lon);
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${state.lat}&lon=${state.lon}&format=json&accept-language=id`)
+          .then(r=>r.json()).then(data=>{
+            const a=data.address||{};
+            state.city=a.city||a.town||a.village||a.county||'Lokasi GPS';
+          }).catch(()=>{state.city='Lokasi GPS';})
+          .finally(()=>calculate());
+      },
+      ()=>{/* GPS gagal, tetap pakai default */},
+      {enableHighAccuracy:true,timeout:8000,maximumAge:60000}
+    );
+  }
+});
 </script>
 </body>
 </html>
