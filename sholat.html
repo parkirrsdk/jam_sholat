@@ -78,6 +78,251 @@ pointer-events:none;z-index:0;}
 .btn-apply{width:100%;background:var(--accent);color:#060d1a;border:none;padding:9px;border-radius:8px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;margin-top:8px;}
 .btn-close-modal{width:100%;background:transparent;color:var(--muted);border:1px solid var(--border);padding:8px;border-radius:8px;font-size:12px;font-family:'Nunito',sans-serif;cursor:pointer;margin-top:6px;}
 
+/* MODAL MASJID */
+.masjid-modal-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;width:92%;max-width:460px;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.masjid-modal-box::-webkit-scrollbar{width:4px;}
+.masjid-modal-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+.masjid-modal-box label{font-size:10px;color:var(--muted);margin-bottom:3px;display:block;margin-top:10px;}
+.masjid-modal-box input,.masjid-modal-box textarea{width:100%;background:var(--active);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-size:13px;font-family:'Nunito',sans-serif;outline:none;}
+.masjid-modal-box input:focus,.masjid-modal-box textarea:focus{border-color:var(--accent);}
+.masjid-modal-box textarea{resize:vertical;min-height:56px;}
+.img-upload-area{
+  width:100%;min-height:120px;border:2px dashed var(--border);border-radius:10px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;transition:border-color 0.2s;margin-top:4px;overflow:hidden;position:relative;
+}
+.img-upload-area:hover{border-color:var(--accent);}
+.img-upload-area img{width:100%;height:120px;object-fit:cover;border-radius:8px;display:none;}
+.img-upload-hint{font-size:11px;color:var(--muted);text-align:center;}
+.img-upload-icon{font-size:28px;}
+#masjidImgInput{display:none;}
+
+/* ===================================================
+   DESKTOP LAYOUT — mode masjid landscape (min 900px)
+   =================================================== */
+@media(min-width:900px){
+  /* Sembunyikan layout mobile, pakai desktop */
+  .app{display:none !important;}
+  .desktop-app{display:flex !important;}
+}
+@media(max-width:899px){
+  .desktop-app{display:none !important;}
+  .app{display:flex !important;}
+}
+
+.desktop-app{
+  position:fixed;inset:0;z-index:1;
+  display:none;
+  flex-direction:column;
+  background:var(--bg);
+  overflow:hidden;
+}
+
+/* HEADER MASJID */
+.dsk-header{
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:clamp(8px,1.2vh,18px) clamp(16px,2vw,36px);
+  background:linear-gradient(90deg,#0a1830,#0f2245,#0a1830);
+  border-bottom:2px solid var(--accent);
+  gap:12px;
+}
+.dsk-header-left{display:flex;align-items:center;gap:clamp(10px,1.5vw,22px);}
+.dsk-masjid-logo{
+  width:clamp(42px,5vw,72px);height:clamp(42px,5vw,72px);
+  border-radius:50%;border:2px solid var(--accent);
+  object-fit:cover;background:var(--active);
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(20px,2.5vw,38px);overflow:hidden;flex-shrink:0;
+}
+.dsk-masjid-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.dsk-masjid-info{}
+.dsk-masjid-name{
+  font-size:clamp(16px,2.2vw,32px);font-weight:800;color:var(--accent);
+  font-family:'Amiri',serif;line-height:1.1;
+}
+.dsk-masjid-addr{font-size:clamp(9px,1vw,14px);color:var(--muted);margin-top:2px;}
+.dsk-header-center{
+  text-align:center;flex:1;
+}
+.dsk-arabic-title{font-family:'Amiri',serif;font-size:clamp(20px,2.8vw,42px);color:var(--accent);display:block;}
+.dsk-sub-title{font-size:clamp(8px,0.9vw,13px);color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.dsk-header-right{
+  display:flex;flex-direction:column;align-items:flex-end;gap:4px;
+}
+.dsk-date-box{text-align:right;}
+.dsk-date-m{font-size:clamp(10px,1.2vw,16px);font-weight:700;color:var(--text);}
+.dsk-date-h{font-family:'Amiri',serif;font-size:clamp(12px,1.4vw,20px);color:var(--accent);}
+.dsk-btn-row{display:flex;gap:6px;margin-top:4px;}
+
+/* BODY */
+.dsk-body{
+  flex:1;display:flex;gap:0;overflow:hidden;min-height:0;
+}
+
+/* LEFT — jadwal sholat */
+.dsk-left{
+  width:clamp(260px,32%,420px);flex-shrink:0;
+  display:flex;flex-direction:column;
+  background:rgba(12,22,40,0.7);
+  border-right:1px solid var(--border);
+  padding:clamp(8px,1.2vh,16px) clamp(10px,1.5vw,20px);
+  gap:clamp(4px,0.6vh,10px);
+}
+
+/* Countdown di desktop */
+.dsk-countdown{
+  background:linear-gradient(135deg,#0f2040,#162545);
+  border:1px solid var(--accent);border-radius:clamp(8px,1vw,14px);
+  padding:clamp(6px,1vh,14px) clamp(10px,1.5vw,18px);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.dsk-cd-name{font-size:clamp(16px,2vw,30px);font-weight:800;color:var(--accent);}
+.dsk-cd-lbl{font-size:clamp(7px,0.8vw,11px);color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.dsk-cd-sub{font-size:clamp(9px,1vw,13px);color:var(--muted);}
+.dsk-cd-timer{font-size:clamp(20px,2.8vw,40px);font-weight:800;color:var(--accent2);font-variant-numeric:tabular-nums;}
+
+/* Prayer rows di desktop */
+.dsk-prayer-table{flex:1;display:flex;flex-direction:column;gap:clamp(3px,0.5vh,8px);overflow:hidden;}
+.dsk-prayer-row{
+  flex:1;display:flex;align-items:center;
+  border-radius:clamp(6px,0.8vw,12px);
+  padding:0 clamp(8px,1.2vw,16px);
+  gap:clamp(6px,1vw,14px);
+  border:1px solid transparent;transition:all 0.3s;
+  position:relative;min-height:0;
+}
+.dsk-prayer-row.active{background:var(--active);border-color:var(--accent);box-shadow:0 0 16px rgba(200,169,110,0.12);}
+.dsk-prayer-row.active::before{content:'';position:absolute;left:0;top:15%;bottom:15%;width:3px;background:var(--accent);border-radius:3px;}
+.dsk-prayer-row.passed{opacity:0.3;}
+.dsk-prayer-row.iqomah-now{background:rgba(78,203,141,0.08);border-color:var(--green);}
+.dsk-prayer-row.iqomah-now::before{content:'';position:absolute;left:0;top:15%;bottom:15%;width:3px;background:var(--green);border-radius:3px;}
+.dsk-pr-icon{font-size:clamp(14px,1.8vw,26px);width:clamp(22px,2.5vw,36px);text-align:center;flex-shrink:0;}
+.dsk-pr-info{flex:1;min-width:0;}
+.dsk-pr-name{font-size:clamp(13px,1.6vw,22px);font-weight:700;color:var(--text);line-height:1.1;}
+.dsk-pr-arabic{font-family:'Amiri',serif;font-size:clamp(10px,1.2vw,17px);color:var(--muted);}
+.dsk-pr-times{text-align:right;flex-shrink:0;}
+.dsk-pr-adzan{font-size:clamp(16px,2.2vw,30px);font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;}
+.dsk-prayer-row.active .dsk-pr-adzan{color:var(--accent);}
+.dsk-prayer-row.iqomah-now .dsk-pr-adzan{color:var(--green);}
+.dsk-pr-iq{font-size:clamp(8px,0.9vw,12px);color:var(--green);}
+.dsk-pr-badge{font-size:clamp(7px,0.8vw,11px);font-weight:700;padding:2px clamp(5px,0.6vw,10px);border-radius:8px;text-transform:uppercase;flex-shrink:0;}
+.dsk-pr-badge.next{background:var(--accent);color:#060d1a;}
+.dsk-pr-badge.iq{background:var(--green);color:#060d1a;animation:blink 1s ease-in-out infinite;}
+.dsk-pr-badge.done{background:transparent;color:var(--muted);border:1px solid var(--border);}
+
+/* CENTER — jam analog + extra */
+.dsk-center{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:clamp(8px,1.5vh,20px) clamp(10px,1.5vw,20px);
+  gap:clamp(8px,1.5vh,20px);
+  position:relative;
+}
+
+/* Jam analog */
+.analog-clock{
+  position:relative;
+  width:clamp(120px,18vw,280px);
+  height:clamp(120px,18vw,280px);
+  flex-shrink:0;
+}
+.clock-face{
+  width:100%;height:100%;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#1a2d50,#0a1628);
+  border:clamp(3px,0.4vw,6px) solid var(--accent);
+  box-shadow:0 0 clamp(10px,2vw,30px) rgba(200,169,110,0.25), inset 0 0 clamp(10px,2vw,30px) rgba(0,0,0,0.5);
+  position:relative;
+}
+.clock-numbers{position:absolute;inset:0;}
+.clock-num{
+  position:absolute;font-size:clamp(8px,1vw,16px);font-weight:800;color:var(--accent);
+  transform-origin:center;text-align:center;
+}
+.clock-hand{position:absolute;bottom:50%;left:50%;transform-origin:bottom center;border-radius:4px;}
+.hand-hour{
+  width:clamp(3px,0.4vw,6px);
+  height:clamp(28px,5vw,80px);
+  background:var(--accent);
+  margin-left:clamp(-1.5px,-0.2vw,-3px);
+  border-radius:3px 3px 0 0;
+}
+.hand-min{
+  width:clamp(2px,0.3vw,4px);
+  height:clamp(38px,7vw,110px);
+  background:var(--text);
+  margin-left:clamp(-1px,-0.15vw,-2px);
+  border-radius:3px 3px 0 0;
+}
+.hand-sec{
+  width:clamp(1px,0.15vw,2px);
+  height:clamp(42px,8vw,120px);
+  background:#e06c6c;
+  margin-left:clamp(-0.5px,-0.075vw,-1px);
+  border-radius:1px;
+}
+.clock-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:clamp(6px,0.8vw,12px);height:clamp(6px,0.8vw,12px);
+  background:var(--accent);border-radius:50%;z-index:10;
+}
+.digital-time{
+  font-size:clamp(24px,4vw,64px);font-weight:800;
+  color:var(--accent2);font-variant-numeric:tabular-nums;letter-spacing:2px;
+  text-shadow:0 0 20px rgba(232,201,126,0.3);
+  flex-shrink:0;
+}
+
+/* Extra times di center */
+.dsk-extra{display:flex;gap:clamp(6px,1vw,14px);flex-wrap:wrap;justify-content:center;}
+.dsk-extra-pill{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:clamp(7px,0.8vw,12px);
+  padding:clamp(4px,0.7vh,10px) clamp(8px,1.2vw,16px);
+  text-align:center;
+}
+.dsk-ep-icon{font-size:clamp(12px,1.5vw,20px);}
+.dsk-ep-label{font-size:clamp(7px,0.8vw,11px);color:var(--muted);}
+.dsk-ep-time{font-size:clamp(12px,1.5vw,20px);font-weight:800;color:var(--text);}
+
+/* RIGHT — gambar masjid */
+.dsk-right{
+  width:clamp(220px,30%,440px);flex-shrink:0;
+  position:relative;overflow:hidden;
+  border-left:1px solid var(--border);
+}
+.dsk-masjid-img{
+  width:100%;height:100%;object-fit:cover;
+  display:block;
+}
+.dsk-img-placeholder{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;color:var(--muted);background:var(--active);cursor:pointer;
+}
+.dsk-img-placeholder-icon{font-size:clamp(36px,5vw,72px);}
+.dsk-img-placeholder-text{font-size:clamp(10px,1.2vw,15px);text-align:center;padding:0 16px;}
+.dsk-img-overlay{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(6,13,26,0.85));
+  padding:clamp(16px,2.5vh,30px) clamp(12px,1.5vw,22px) clamp(10px,1.5vh,18px);
+}
+.dsk-city-name{font-size:clamp(14px,1.8vw,26px);font-weight:800;color:var(--text);}
+.dsk-coord{font-size:clamp(8px,0.9vw,12px);color:var(--muted);}
+
+/* FOOTER — running text */
+.dsk-footer{
+  flex-shrink:0;
+  height:clamp(26px,3.5vh,46px);
+  background:rgba(10,22,42,0.9);
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;
+  overflow:hidden;position:relative;
+}
+.dsk-footer::before{content:'';position:absolute;left:0;top:0;bottom:0;width:50px;background:linear-gradient(to right,rgba(10,22,42,0.95),transparent);z-index:2;}
+.dsk-footer::after{content:'';position:absolute;right:0;top:0;bottom:0;width:50px;background:linear-gradient(to left,rgba(10,22,42,0.95),transparent);z-index:2;}
+
+
 /* ==============================================
    APP LAYOUT — full screen semua perangkat
    ============================================== */
@@ -354,6 +599,134 @@ pointer-events:none;z-index:0;}
     <button class="btn-apply" onclick="saveAndCloseRT()" style="margin-top:12px">✅ Simpan & Tutup</button>
     <button class="btn-close-modal" onclick="closeRTModal()">Batal</button>
   </div>
+</div>
+
+<!-- MODAL MASJID -->
+<div class="modal-overlay" id="masjidModalOverlay">
+  <div class="masjid-modal-box">
+    <div class="modal-title">🕌 Pengaturan Masjid</div>
+    <label>Nama Masjid</label>
+    <input type="text" id="masjidName" placeholder="Contoh: Masjid Al-Ikhlas"/>
+    <label>Alamat / Lokasi</label>
+    <textarea id="masjidAddr" placeholder="Contoh: Jl. Merdeka No. 1, Semarang" rows="2"></textarea>
+    <label>Foto Masjid (klik untuk upload)</label>
+    <div class="img-upload-area" id="imgUploadArea" onclick="document.getElementById('masjidImgInput').click()">
+      <img id="masjidPreview" alt="Foto Masjid"/>
+      <div id="imgUploadHintWrap">
+        <div class="img-upload-icon">🕌</div>
+        <div class="img-upload-hint">Klik untuk upload foto masjid<br><small style="opacity:0.6">JPG, PNG — maks 5MB</small></div>
+      </div>
+    </div>
+    <input type="file" id="masjidImgInput" accept="image/*" onchange="handleMasjidImg(this)"/>
+    <button id="btnHapusFoto" onclick="hapusFotoMasjid()" style="width:100%;background:transparent;border:1px solid #e06c6c;color:#e06c6c;padding:7px;border-radius:8px;font-size:12px;font-family:'Nunito',sans-serif;cursor:pointer;margin-top:6px;display:none">🗑️ Hapus Foto</button>
+    <button class="btn-apply" onclick="saveMasjidSettings()" style="margin-top:14px">✅ Simpan</button>
+    <button class="btn-close-modal" onclick="closeMasjidModal()">Batal</button>
+  </div>
+</div>
+
+<!-- DESKTOP LAYOUT -->
+<div class="desktop-app" id="desktopApp">
+
+  <!-- HEADER -->
+  <div class="dsk-header">
+    <div class="dsk-header-left">
+      <div class="dsk-masjid-logo" id="dskLogo">🕌
+        <img id="dskLogoImg" src="" alt="" style="display:none"/>
+      </div>
+      <div class="dsk-masjid-info">
+        <div class="dsk-masjid-name" id="dskMasjidName">Masjid</div>
+        <div class="dsk-masjid-addr" id="dskMasjidAddr">Nama & alamat masjid belum diatur</div>
+      </div>
+    </div>
+    <div class="dsk-header-center">
+      <span class="dsk-arabic-title">أوقات الصلاة</span>
+      <span class="dsk-sub-title">Jadwal Waktu Sholat</span>
+    </div>
+    <div class="dsk-header-right">
+      <div class="dsk-date-box">
+        <div class="dsk-date-m" id="dskDateM">—</div>
+        <div class="dsk-date-h" id="dskDateH">—</div>
+      </div>
+      <div class="dsk-btn-row">
+        <button class="btn-icon" onclick="refreshGPS()" id="dskBtnGPS" title="Refresh GPS">🔄</button>
+        <button class="btn-icon" onclick="openModal()" title="Lokasi">📍</button>
+        <button class="btn-icon" onclick="openMasjidModal()" title="Pengaturan Masjid">🕌</button>
+        <button class="btn-icon" onclick="openRTModal()" title="Running Text">📢</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="dsk-body">
+
+    <!-- LEFT: jadwal -->
+    <div class="dsk-left">
+      <div class="dsk-countdown">
+        <div>
+          <div class="dsk-cd-lbl">Sholat Berikutnya</div>
+          <div class="dsk-cd-name" id="dskNextName">—</div>
+          <div class="dsk-cd-sub" id="dskNextTime">Adzan pukul —</div>
+        </div>
+        <div style="text-align:right">
+          <div class="dsk-cd-lbl">Sisa Waktu</div>
+          <div class="dsk-cd-timer" id="dskCdTimer">--:--:--</div>
+        </div>
+      </div>
+      <div class="dsk-prayer-table" id="dskPrayerTable"></div>
+    </div>
+
+    <!-- CENTER: jam -->
+    <div class="dsk-center">
+      <div class="analog-clock" id="analogClock">
+        <div class="clock-face" id="clockFace">
+          <div class="clock-hand hand-hour" id="handHour"></div>
+          <div class="clock-hand hand-min"  id="handMin"></div>
+          <div class="clock-hand hand-sec"  id="handSec"></div>
+          <div class="clock-center"></div>
+        </div>
+      </div>
+      <div class="digital-time" id="dskDigital">--:--:--</div>
+      <div class="dsk-extra">
+        <div class="dsk-extra-pill">
+          <div class="dsk-ep-icon">🌙</div>
+          <div class="dsk-ep-label">Imsak</div>
+          <div class="dsk-ep-time" id="dskImsak">—</div>
+        </div>
+        <div class="dsk-extra-pill">
+          <div class="dsk-ep-icon">🌅</div>
+          <div class="dsk-ep-label">Syuruk</div>
+          <div class="dsk-ep-time" id="dskSyuruk">—</div>
+        </div>
+        <div class="dsk-extra-pill">
+          <div class="dsk-ep-icon">🕛</div>
+          <div class="dsk-ep-label">Tengah Malam</div>
+          <div class="dsk-ep-time" id="dskMidnight">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: foto masjid -->
+    <div class="dsk-right" id="dskRight" onclick="openMasjidModal()">
+      <div class="dsk-img-placeholder" id="dskImgPlaceholder">
+        <div class="dsk-img-placeholder-icon">🕌</div>
+        <div class="dsk-img-placeholder-text">Klik untuk upload<br>foto masjid</div>
+      </div>
+      <img class="dsk-masjid-img" id="dskMasjidImg" src="" alt="" style="display:none"/>
+      <div class="dsk-img-overlay">
+        <div class="dsk-city-name" id="dskCity">Semarang</div>
+        <div class="dsk-coord" id="dskCoord"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER running text -->
+  <div class="dsk-footer" id="dskFooter">
+    <span class="running-text-inner" id="dskRtInner"
+      style="font-size:clamp(11px,1.3vw,18px);">
+    </span>
+  </div>
+
 </div>
 
 <!-- APP -->
@@ -751,7 +1124,9 @@ function applyManualLocation(){
   const lon=parseFloat(document.getElementById('inputLon').value);
   if(!isNaN(lat)&&!isNaN(lon)){
     state={...state,lat,lon,city:city||'Lokasi Manual',timezone:getTimezone(lon)};
-    calculate();closeModal();
+    calculate();
+    saveAll();
+    closeModal();
   }
 }
 function fillFromGPS(){
@@ -815,10 +1190,13 @@ function getTimezone(lon){if(lon>=135)return 9;if(lon>=115)return 8;return 7;}
 
 function refreshGPS(){
   const btn=document.getElementById('btnGPSRefresh');
+  const btn2=document.getElementById('dskBtnGPS');
   if(btn)btn.textContent='⏳';
+  if(btn2)btn2.textContent='⏳';
   if(!navigator.geolocation){
     showToast('GPS tidak tersedia','error');
     if(btn)btn.textContent='🔄';
+    if(btn2)btn2.textContent='🔄';
     return;
   }
   navigator.geolocation.getCurrentPosition(
@@ -831,11 +1209,13 @@ function refreshGPS(){
         .finally(()=>{
           calculate();
           if(btn)btn.textContent='🔄';
+          if(btn2)btn2.textContent='🔄';
           showToast('✅ Lokasi diperbarui: '+state.city,'success');
         });
     },
     err=>{
       if(btn)btn.textContent='🔄';
+      if(btn2)btn2.textContent='🔄';
       let msg='GPS gagal.';
       if(err.code===1) msg='Izin GPS ditolak di Chrome. Ketuk 🔒 di address bar → Izin → Lokasi → Izinkan.';
       else if(err.code===2) msg='Sinyal GPS tidak tersedia.';
@@ -844,6 +1224,354 @@ function refreshGPS(){
     },
     {enableHighAccuracy:true,timeout:12000,maximumAge:30000}
   );
+}
+
+// ==============================
+// STATE MASJID
+// ==============================
+let masjidState = {
+  name: 'Masjid',
+  addr: 'Nama & alamat masjid belum diatur',
+  imgData: ''
+};
+
+// ==============================
+// LOCALSTORAGE — simpan & muat semua data
+// ==============================
+const LS_KEY = 'jadwalsholat_v1';
+
+function saveAll(){
+  try{
+    // Pisah imgData karena bisa sangat besar — simpan di key terpisah
+    const data = {
+      masjid: { name: masjidState.name, addr: masjidState.addr },
+      location: { lat: state.lat, lon: state.lon, city: state.city, timezone: state.timezone },
+      rt: {
+        enabled: rtState.enabled, speed: rtState.speed,
+        fontSize: rtState.fontSize, color: rtState.color,
+        texts: rtState.texts
+      }
+    };
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+    // Simpan gambar di key terpisah (bisa besar)
+    if(masjidState.imgData){
+      localStorage.setItem(LS_KEY+'_img', masjidState.imgData);
+    } else {
+      localStorage.removeItem(LS_KEY+'_img');
+    }
+  } catch(e){
+    // localStorage penuh (biasanya karena gambar terlalu besar)
+    showToast('⚠️ Gagal menyimpan: storage penuh. Coba gambar lebih kecil.','error');
+  }
+}
+
+function loadAll(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw){
+      const data = JSON.parse(raw);
+      if(data.masjid){
+        masjidState.name = data.masjid.name || 'Masjid';
+        masjidState.addr = data.masjid.addr || '';
+      }
+      if(data.location){
+        state.lat      = data.location.lat      ?? state.lat;
+        state.lon      = data.location.lon      ?? state.lon;
+        state.city     = data.location.city     ?? state.city;
+        state.timezone = data.location.timezone ?? state.timezone;
+      }
+      if(data.rt){
+        rtState.enabled  = data.rt.enabled  ?? true;
+        rtState.speed    = data.rt.speed    ?? 20;
+        rtState.fontSize = data.rt.fontSize ?? '13px';
+        rtState.color    = data.rt.color    ?? '#c8a96e';
+        if(Array.isArray(data.rt.texts) && data.rt.texts.length>0)
+          rtState.texts = data.rt.texts;
+      }
+    }
+    // Muat gambar
+    const img = localStorage.getItem(LS_KEY+'_img');
+    if(img) masjidState.imgData = img;
+  } catch(e){ /* korup / tidak ada — pakai default */ }
+}
+
+// ==============================
+// DESKTOP RENDER
+// ==============================
+function renderDesktop(times){
+  const now = new Date();
+  const curMin = now.getHours()*60 + now.getMinutes();
+
+  // Next prayer
+  let nextIdx = -1;
+  for(let i=0;i<PRAYERS.length;i++){
+    if(toMin(times[PRAYERS[i].key])>curMin){nextIdx=i;break;}
+  }
+  if(nextIdx===-1) nextIdx=0;
+
+  // Iqomah check
+  let iqIdx=-1;
+  for(let i=0;i<PRAYERS.length;i++){
+    const diff=curMin-toMin(times[PRAYERS[i].key]);
+    if(diff>=0&&diff<5){iqIdx=i;break;}
+  }
+
+  // Prayer table
+  const tbl = document.getElementById('dskPrayerTable');
+  if(tbl){
+    tbl.innerHTML='';
+    PRAYERS.forEach((p,i)=>{
+      const adzan=times[p.key];
+      const iqTime=addMin(adzan,5);
+      const iqMin=toMin(iqTime);
+      const passed=(curMin>=iqMin)&&(i!==nextIdx);
+      const isNext=(i===nextIdx)&&(iqIdx===-1||iqIdx!==i);
+      const isIq=(i===iqIdx);
+      const row=document.createElement('div');
+      let cls='dsk-prayer-row';
+      if(isIq) cls+=' iqomah-now';
+      else if(isNext) cls+=' active';
+      else if(passed) cls+=' passed';
+      row.className=cls;
+      let badge='';
+      if(isIq) badge='<span class="dsk-pr-badge iq">Iqomah</span>';
+      else if(isNext) badge='<span class="dsk-pr-badge next">Berikutnya</span>';
+      else if(passed) badge='<span class="dsk-pr-badge done">✓</span>';
+      row.innerHTML=`
+        <div class="dsk-pr-icon">${p.icon}</div>
+        <div class="dsk-pr-info">
+          <div class="dsk-pr-name">${p.name}</div>
+          <div class="dsk-pr-arabic">${p.arabic}</div>
+        </div>
+        <div class="dsk-pr-times">
+          <div class="dsk-pr-adzan">${adzan}</div>
+          <div class="dsk-pr-iq">⏱ ${iqTime}</div>
+        </div>
+        ${badge}`;
+      tbl.appendChild(row);
+    });
+  }
+
+  // Countdown
+  const np=PRAYERS[nextIdx];
+  const el=document.getElementById('dskNextName');
+  if(el) el.textContent=np.name;
+  const et=document.getElementById('dskNextTime');
+  if(et) et.textContent='Adzan pukul '+times[np.key];
+
+  // Extra
+  const ei=document.getElementById('dskImsak');
+  const es=document.getElementById('dskSyuruk');
+  const em=document.getElementById('dskMidnight');
+  if(ei) ei.textContent=times.imsak;
+  if(es) es.textContent=times.sunrise;
+  if(em) em.textContent=times.midnight;
+
+  // City
+  const ec=document.getElementById('dskCity');
+  const eo=document.getElementById('dskCoord');
+  if(ec) ec.textContent=state.city;
+  if(eo) eo.textContent=state.lat.toFixed(4)+'°, '+state.lon.toFixed(4)+'°';
+
+  // Dates
+  const now2=new Date();
+  const days=['Ahad','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const dm=document.getElementById('dskDateM');
+  const dh=document.getElementById('dskDateH');
+  if(dm) dm.textContent=days[now2.getDay()]+', '+now2.getDate()+' '+months[now2.getMonth()]+' '+now2.getFullYear();
+  if(dh) dh.textContent=toHijri(now2);
+
+  // Countdown desktop
+  startDskCountdown(times[np.key]);
+
+  // Running text footer
+  const dri=document.getElementById('dskRtInner');
+  if(dri){
+    dri.style.color=rtState.color;
+    dri.style.animationDuration=rtState.speed+'s';
+    dri.textContent=rtState.texts.join('   \u00a0|\u00a0   ');
+  }
+}
+
+// Desktop countdown
+let dskCdInterval=null;
+function startDskCountdown(target){
+  if(dskCdInterval) clearInterval(dskCdInterval);
+  function tick(){
+    const now=new Date();
+    const ns=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
+    const[th,tm]=target.split(':').map(Number);
+    let ts=th*3600+tm*60;
+    if(ts<=ns) ts+=86400;
+    const diff=ts-ns;
+    const h=Math.floor(diff/3600),m=Math.floor((diff%3600)/60),s=diff%60;
+    const el=document.getElementById('dskCdTimer');
+    if(el) el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+  tick();
+  dskCdInterval=setInterval(tick,1000);
+}
+
+// ==============================
+// JAM ANALOG
+// ==============================
+function drawAnalogClock(){
+  const now=new Date();
+  const h=now.getHours()%12, m=now.getMinutes(), s=now.getSeconds();
+  const hDeg=(h*30)+(m*0.5)+(s*0.00833);
+  const mDeg=(m*6)+(s*0.1);
+  const sDeg=s*6;
+
+  const handH=document.getElementById('handHour');
+  const handM=document.getElementById('handMin');
+  const handS=document.getElementById('handSec');
+  if(handH) handH.style.transform=`rotate(${hDeg}deg)`;
+  if(handM) handM.style.transform=`rotate(${mDeg}deg)`;
+  if(handS) handS.style.transform=`rotate(${sDeg}deg)`;
+
+  // Digital
+  const dig=document.getElementById('dskDigital');
+  if(dig) dig.textContent=
+    String(now.getHours()).padStart(2,'0')+':'+
+    String(now.getMinutes()).padStart(2,'0')+':'+
+    String(now.getSeconds()).padStart(2,'0');
+}
+
+// Gambar angka jam pada canvas analog
+function drawClockNumbers(){
+  const face=document.getElementById('clockFace');
+  if(!face) return;
+  // Hapus angka lama
+  face.querySelectorAll('.clock-num').forEach(e=>e.remove());
+  const size=face.offsetWidth;
+  const r=size/2;
+  const nums=[12,1,2,3,4,5,6,7,8,9,10,11];
+  nums.forEach((n,i)=>{
+    const angle=(i*30-90)*Math.PI/180;
+    const nr=r*0.76;
+    const x=r+nr*Math.cos(angle);
+    const y=r+nr*Math.sin(angle);
+    const el=document.createElement('div');
+    el.className='clock-num';
+    el.textContent=n;
+    el.style.left=(x-12)+'px';
+    el.style.top=(y-10)+'px';
+    el.style.position='absolute';
+    face.appendChild(el);
+  });
+}
+
+// ==============================
+// MASJID MODAL
+// ==============================
+function openMasjidModal(){
+  document.getElementById('masjidName').value=masjidState.name||'';
+  document.getElementById('masjidAddr').value=masjidState.addr||'';
+  const prev=document.getElementById('masjidPreview');
+  const hint=document.getElementById('imgUploadHintWrap');
+  const btnHapus=document.getElementById('btnHapusFoto');
+  if(masjidState.imgData){
+    prev.src=masjidState.imgData;
+    prev.style.display='block';
+    hint.style.display='none';
+    if(btnHapus) btnHapus.style.display='block';
+  } else {
+    prev.style.display='none';
+    hint.style.display='flex';
+    if(btnHapus) btnHapus.style.display='none';
+  }
+  document.getElementById('masjidModalOverlay').classList.add('show');
+}
+
+function hapusFotoMasjid(){
+  masjidState.imgData='';
+  const prev=document.getElementById('masjidPreview');
+  const hint=document.getElementById('imgUploadHintWrap');
+  const btnHapus=document.getElementById('btnHapusFoto');
+  prev.src=''; prev.style.display='none';
+  hint.style.display='flex';
+  if(btnHapus) btnHapus.style.display='none';
+  document.getElementById('masjidImgInput').value='';
+  showToast('Foto dihapus. Klik Simpan untuk menyimpan perubahan.','info');
+}
+function closeMasjidModal(){
+  document.getElementById('masjidModalOverlay').classList.remove('show');
+}
+function handleMasjidImg(input){
+  const file=input.files[0];
+  if(!file) return;
+  if(file.size>5*1024*1024){showToast('File terlalu besar, maks 5MB','error');return;}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const data=e.target.result;
+    const prev=document.getElementById('masjidPreview');
+    prev.src=data; prev.style.display='block';
+    document.getElementById('imgUploadHintWrap').style.display='none';
+    masjidState.imgData=data;
+  };
+  reader.readAsDataURL(file);
+}
+function saveMasjidSettings(){
+  masjidState.name=document.getElementById('masjidName').value.trim()||'Masjid';
+  masjidState.addr=document.getElementById('masjidAddr').value.trim()||'';
+  applyMasjidToDesktop();
+  saveAll();
+  closeMasjidModal();
+  showToast('✅ Data masjid disimpan permanen!','success');
+}
+function applyMasjidToDesktop(){
+  // Header
+  const mn=document.getElementById('dskMasjidName');
+  const ma=document.getElementById('dskMasjidAddr');
+  if(mn) mn.textContent=masjidState.name;
+  if(ma) ma.textContent=masjidState.addr;
+  // Logo foto
+  const li=document.getElementById('dskLogoImg');
+  const lt=document.getElementById('dskLogo');
+  if(masjidState.imgData && li && lt){
+    li.src=masjidState.imgData;
+    li.style.display='block';
+    lt.childNodes.forEach(n=>{if(n.nodeType===3) n.textContent='';});
+  }
+  // Foto panel kanan
+  const img=document.getElementById('dskMasjidImg');
+  const ph=document.getElementById('dskImgPlaceholder');
+  if(img && ph){
+    if(masjidState.imgData){
+      img.src=masjidState.imgData;
+      img.style.display='block';
+      ph.style.display='none';
+    } else {
+      img.style.display='none';
+      ph.style.display='flex';
+    }
+  }
+}
+
+// Override calculate agar juga render desktop
+const _origCalculate = calculate;
+function calculate(){
+  const t=calcTimes(state.lat,state.lon,state.timezone);
+  state.times=t;
+  render(t);
+  renderDesktop(t);
+  updateDates();
+  document.getElementById('locName').textContent=state.city;
+  document.getElementById('locCoord').textContent=state.lat.toFixed(4)+'°, '+state.lon.toFixed(4)+'°';
+}
+
+// Override renderRT agar juga update footer desktop
+const _origRenderRT = renderRT;
+function renderRT(){
+  _origRenderRT();
+  const dri=document.getElementById('dskRtInner');
+  if(!dri) return;
+  dri.style.color=rtState.color;
+  dri.style.animationDuration=rtState.speed+'s';
+  dri.textContent=rtState.texts.join('   \u00a0|\u00a0   ');
+  const fw=document.getElementById('dskFooter');
+  if(fw) fw.style.display=rtState.enabled?'flex':'none';
 }
 
 // ==============================
@@ -946,18 +1674,29 @@ function closeRTModal(){
 }
 
 function saveAndCloseRT(){
-  applyRTSettings(); // baca form → simpan ke rtState → render
+  applyRTSettings();
+  saveAll();
   closeRTModal();
-  showToast('✅ Running text disimpan!','success');
+  showToast('✅ Running text disimpan permanen!','success');
 }
 
 // ==============================
 // INIT — langsung tampil, GPS opsional
 // ==============================
 document.addEventListener('DOMContentLoaded', function(){
+  loadAll(); // muat semua data tersimpan dari localStorage
+
   updateDates();
   calculate();
-  renderRT(); // tampilkan running text dari rtState (tidak butuh form)
+  renderRT();
+  applyMasjidToDesktop();
+
+  // Jam analog — gambar angka & mulai tick
+  drawClockNumbers();
+  drawAnalogClock();
+  setInterval(drawAnalogClock, 1000);
+  // Redraw angka jika resize
+  window.addEventListener('resize', drawClockNumbers);
 
   // Enter di input running text
   const rtInp = document.getElementById('rtNewText');
