@@ -66,7 +66,7 @@ pointer-events:none;z-index:0;}
 .toast.toast-error{border-color:#e06c6c;color:#e06c6c;}
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(6,13,26,0.85);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.modal-overlay{position:fixed;inset:0;background:rgba(6,13,26,0.88);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
 .modal-overlay.show{opacity:1;pointer-events:all;}
 .modal-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;width:90%;max-width:340px;}
 .modal-title{font-size:14px;font-weight:700;margin-bottom:12px;}
@@ -242,7 +242,12 @@ pointer-events:none;z-index:0;}
 }
 
 /* MODAL RUNNING TEXT */
-.rt-modal-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;width:92%;max-width:400px;max-height:85vh;overflow-y:auto;}
+.rt-modal-box{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:18px;width:92%;max-width:420px;
+  max-height:88vh;overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
 .rt-modal-box::-webkit-scrollbar{width:4px;}
 .rt-modal-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
 .rt-list{display:flex;flex-direction:column;gap:6px;margin:10px 0;}
@@ -847,7 +852,7 @@ function refreshGPS(){
 let rtState = {
   enabled: true,
   speed: 20,
-  fontSize: '12px',
+  fontSize: '13px',
   color: '#c8a96e',
   texts: [
     'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم',
@@ -858,29 +863,34 @@ let rtState = {
   ]
 };
 
-function buildRTContent(){
-  return rtState.texts.join('  \u00a0\u00a0\u00a0|\u00a0\u00a0\u00a0  ');
-}
-
-function applyRTSettings(){
+// Render running text ke DOM dari rtState (tidak baca form)
+function renderRT(){
   const wrap = document.getElementById('rtWrap');
   const inner = document.getElementById('rtInner');
-  if(!wrap||!inner) return;
-
-  rtState.enabled = document.getElementById('rtEnabled').checked;
-  rtState.fontSize = document.getElementById('rtFontSize').value;
-  rtState.color = document.getElementById('rtColor').value;
-
+  if(!wrap || !inner) return;
   wrap.style.display = rtState.enabled ? 'flex' : 'none';
-  inner.style.fontSize = rtState.fontSize;
   inner.style.color = rtState.color;
   inner.style.animationDuration = rtState.speed + 's';
-  inner.textContent = buildRTContent();
+  // Override clamp font-size hanya jika user set manual
+  inner.style.fontSize = rtState.fontSize;
+  inner.textContent = rtState.texts.join('   \u00a0|\u00a0   ');
+}
+
+// Baca nilai dari form lalu simpan ke rtState, lalu render
+function applyRTSettings(){
+  const elEnabled  = document.getElementById('rtEnabled');
+  const elFontSize = document.getElementById('rtFontSize');
+  const elColor    = document.getElementById('rtColor');
+  if(elEnabled)  rtState.enabled  = elEnabled.checked;
+  if(elFontSize) rtState.fontSize = elFontSize.value;
+  if(elColor)    rtState.color    = elColor.value;
+  renderRT();
 }
 
 function updateRTSpeed(val){
   rtState.speed = parseInt(val);
-  document.getElementById('rtSpeedVal').textContent = val + 's';
+  const el = document.getElementById('rtSpeedVal');
+  if(el) el.textContent = val + 's';
   const inner = document.getElementById('rtInner');
   if(inner) inner.style.animationDuration = val + 's';
 }
@@ -900,27 +910,33 @@ function renderRTList(){
 
 function addRTText(){
   const inp = document.getElementById('rtNewText');
+  if(!inp) return;
   const val = inp.value.trim();
   if(!val) return;
   rtState.texts.push(val);
   inp.value = '';
   renderRTList();
-  applyRTSettings();
+  renderRT(); // hanya render, tidak baca form
 }
 
 function deleteRTText(idx){
   rtState.texts.splice(idx, 1);
   renderRTList();
-  applyRTSettings();
+  renderRT(); // hanya render, tidak baca form
 }
 
 function openRTModal(){
-  // Sync UI dengan state saat ini
-  document.getElementById('rtEnabled').checked = rtState.enabled;
-  document.getElementById('rtSpeed').value = rtState.speed;
-  document.getElementById('rtSpeedVal').textContent = rtState.speed + 's';
-  document.getElementById('rtFontSize').value = rtState.fontSize;
-  document.getElementById('rtColor').value = rtState.color;
+  // Sync form dengan rtState saat ini
+  const elEnabled  = document.getElementById('rtEnabled');
+  const elSpeed    = document.getElementById('rtSpeed');
+  const elSpeedVal = document.getElementById('rtSpeedVal');
+  const elFontSize = document.getElementById('rtFontSize');
+  const elColor    = document.getElementById('rtColor');
+  if(elEnabled)  elEnabled.checked  = rtState.enabled;
+  if(elSpeed)    elSpeed.value      = rtState.speed;
+  if(elSpeedVal) elSpeedVal.textContent = rtState.speed + 's';
+  if(elFontSize) elFontSize.value   = rtState.fontSize;
+  if(elColor)    elColor.value      = rtState.color;
   renderRTList();
   document.getElementById('rtModalOverlay').classList.add('show');
 }
@@ -930,16 +946,10 @@ function closeRTModal(){
 }
 
 function saveAndCloseRT(){
-  applyRTSettings();
+  applyRTSettings(); // baca form → simpan ke rtState → render
   closeRTModal();
   showToast('✅ Running text disimpan!','success');
 }
-
-// Tambah teks dengan Enter
-document.addEventListener('DOMContentLoaded', function(){
-  const inp = document.getElementById('rtNewText');
-  if(inp) inp.addEventListener('keydown', e=>{ if(e.key==='Enter') addRTText(); });
-});
 
 // ==============================
 // INIT — langsung tampil, GPS opsional
@@ -947,7 +957,11 @@ document.addEventListener('DOMContentLoaded', function(){
 document.addEventListener('DOMContentLoaded', function(){
   updateDates();
   calculate();
-  applyRTSettings(); // init running text
+  renderRT(); // tampilkan running text dari rtState (tidak butuh form)
+
+  // Enter di input running text
+  const rtInp = document.getElementById('rtNewText');
+  if(rtInp) rtInp.addEventListener('keydown', e=>{ if(e.key==='Enter') addRTText(); });
 
   // Coba GPS di background diam-diam (tidak blokir tampilan)
   if(navigator.geolocation){
