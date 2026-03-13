@@ -364,14 +364,20 @@ pointer-events:none;z-index:0;}
 /* FOOTER — running text */
 .dsk-footer{
   flex-shrink:0;
-  height:clamp(26px,3.5vh,46px);
+  height:clamp(52px,6.5vh,76px);
   background:rgba(10,22,42,0.9);
-  border-top:1px solid var(--border);
+  border-top:2px solid var(--border);
   display:flex;align-items:center;
   overflow:hidden;position:relative;
 }
-.dsk-footer::before{content:'';position:absolute;left:0;top:0;bottom:0;width:50px;background:linear-gradient(to right,rgba(10,22,42,0.95),transparent);z-index:2;}
-.dsk-footer::after{content:'';position:absolute;right:0;top:0;bottom:0;width:50px;background:linear-gradient(to left,rgba(10,22,42,0.95),transparent);z-index:2;}
+.dsk-footer::before{content:'';position:absolute;left:0;top:0;bottom:0;width:60px;background:linear-gradient(to right,rgba(10,22,42,0.95),transparent);z-index:2;}
+.dsk-footer::after{content:'';position:absolute;right:0;top:0;bottom:0;width:60px;background:linear-gradient(to left,rgba(10,22,42,0.95),transparent);z-index:2;}
+/* Font khusus running text desktop — lebih besar */
+.dsk-footer .running-text-inner{
+  font-size:clamp(18px,2.2vw,32px);
+  font-weight:700;
+  letter-spacing:0.5px;
+}
 
 
 /* ==============================================
@@ -511,7 +517,7 @@ pointer-events:none;z-index:0;}
   border-radius:var(--r);
   overflow:hidden;
   position:relative;
-  height:28px;
+  height:44px;
   display:flex;
   align-items:center;
 }
@@ -523,7 +529,7 @@ pointer-events:none;z-index:0;}
 .running-text-inner{
   white-space:nowrap;display:inline-block;
   animation:marquee 20s linear infinite;
-  font-size:12px;font-weight:600;color:var(--accent);
+  font-size:18px;font-weight:700;color:var(--accent);
   padding-left:100%;
 }
 .running-text-inner:hover{animation-play-state:paused;}
@@ -544,7 +550,8 @@ pointer-events:none;z-index:0;}
   .pr-arabic{font-size:14px;}
   .pr-icon{font-size:22px;}
   .ep-time{font-size:15px;}
-  .running-text-inner{font-size:14px;}
+  .running-text-wrap{height:44px;}
+  .running-text-inner{font-size:18px;}
 }
 
 /* MODAL RUNNING TEXT */
@@ -783,9 +790,7 @@ pointer-events:none;z-index:0;}
 
   <!-- FOOTER running text -->
   <div class="dsk-footer" id="dskFooter">
-    <span class="running-text-inner" id="dskRtInner"
-      style="font-size:clamp(11px,1.3vw,18px);">
-    </span>
+    <span class="running-text-inner" id="dskRtInner"></span>
   </div>
 
 </div>
