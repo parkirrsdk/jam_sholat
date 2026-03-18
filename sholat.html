@@ -978,20 +978,32 @@ function calcTimes(lat,lon,tz,date=new Date()){
   const JD=jDate(y,mo,d)-lon/(15*24);
   const{eqt,decl}=sunPos(JD);
   const noon=12+tz-lon/15-eqt;
+
+  // Hitung hour angle untuk sudut tertentu
   function td(ang){
     const v=-Math.sin(ang*D2R)-Math.sin(decl*D2R)*Math.sin(lat*D2R);
     return Math.acos(clamp(v/(Math.cos(decl*D2R)*Math.cos(lat*D2R))))*R2D/15;
   }
-  const fajr=noon-td(20);
-  const sunrise=noon-td(0.833);
-  const dhuhr=noon+0.0333;
-  const asrAng=Math.atan(1+Math.tan(Math.abs(lat-decl)*D2R))*R2D;
-  const asrV=(Math.sin(asrAng*D2R)-Math.sin(lat*D2R)*Math.sin(decl*D2R))/(Math.cos(lat*D2R)*Math.cos(decl*D2R));
-  const asr=noon+Math.acos(clamp(asrV))*R2D/15;
-  const maghrib=noon+td(0.833);
-  const isha=noon+td(18);
-  const imsak=fajr-10/60;
+
+  // Ashar Syafi'i: bayangan = 1x panjang benda
+  // Sudut elevasi ashar: tan(elev) = 1/(1 + tan(|lat-decl|))
+  const zenith=Math.abs(lat-decl);
+  const asrElev=Math.atan(1/(1+Math.tan(zenith*D2R)))*R2D;
+  const sinE=Math.sin(asrElev*D2R);
+  const asrHA=Math.acos(clamp((sinE-Math.sin(lat*D2R)*Math.sin(decl*D2R))/(Math.cos(lat*D2R)*Math.cos(decl*D2R))))*R2D/15;
+
+  // Ikhtiyath standar Kemenag RI: +2 menit untuk semua waktu masuk
+  // Dzuhur: +4 menit (mencakup waktu zawal + ikhtiyath)
+  const IKH=2/60;
+  const fajr   =noon-td(20)   +IKH;
+  const sunrise =noon-td(0.833);        // syuruk tidak pakai ikhtiyath
+  const dhuhr  =noon           +4/60;  // zawal + ikhtiyath
+  const asr    =noon+asrHA     +IKH;
+  const maghrib=noon+td(0.833) +IKH;
+  const isha   =noon+td(18)    +IKH;
+  const imsak  =fajr-10/60;            // 10 menit sebelum subuh
   const midnight=(maghrib+fajr+24)/2;
+
   function f(h){h=fxH(h);return String(Math.floor(h)).padStart(2,'0')+':'+String(Math.floor((h-Math.floor(h))*60)).padStart(2,'0');}
   return{imsak:f(imsak),fajr:f(fajr),sunrise:f(sunrise),dhuhr:f(dhuhr),asr:f(asr),maghrib:f(maghrib),isha:f(isha),midnight:f(midnight)};
 }
